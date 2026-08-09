@@ -48,9 +48,11 @@ final class WallpaperRootViewController: ViewController {
     private let solarService: SolarService
     private let settingsService: SettingsService
     private let imageProvider: ImageProvider
+    private let initialModels: [GalleryModel]
 
     private lazy var contentView = RootContentView()
     private weak var navigationController: NavigationController?
+    private weak var mainViewController: WallpaperMainViewController?
     private weak var createViewController: WallpaperCreateViewController?
     private weak var tipViewController: TipViewController?
     private weak var setViewController: WallpaperSetViewController?
@@ -63,7 +65,8 @@ final class WallpaperRootViewController: ViewController {
         wallpaperService: WallpaperService,
         solarService: SolarService,
         settingsService: SettingsService,
-        imageProvider: ImageProvider
+        imageProvider: ImageProvider,
+        initialModels: [GalleryModel] = []
     ) {
         self.type = type
         self.fileService = fileService
@@ -71,6 +74,7 @@ final class WallpaperRootViewController: ViewController {
         self.solarService = solarService
         self.settingsService = settingsService
         self.imageProvider = imageProvider
+        self.initialModels = initialModels
         super.init()
     }
     
@@ -95,6 +99,14 @@ final class WallpaperRootViewController: ViewController {
     // MARK: - Public
 
     weak var delegate: WallpaperRootViewControllerDelegate?
+
+    var galleryModels: [GalleryModel] {
+        return mainViewController?.galleryModels ?? []
+    }
+
+    func replaceGalleryModels(_ models: [GalleryModel]) {
+        mainViewController?.replaceGalleryModels(models)
+    }
     
     public func presentTipController(firstPresent: Bool, animated: Bool) {
         guard tipViewController == nil else {
@@ -147,9 +159,11 @@ final class WallpaperRootViewController: ViewController {
             type: type,
             fileService: fileService,
             solarService: solarService,
-            imageProvider: imageProvider
+            imageProvider: imageProvider,
+            initialModels: initialModels
         )
         controller.delegate = self
+        mainViewController = controller
         let navigationController = NavigationController(rootViewController: controller)
         self.navigationController = navigationController
         addChildController(navigationController, container: view)

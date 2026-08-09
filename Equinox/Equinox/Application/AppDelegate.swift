@@ -66,6 +66,18 @@ extension AppDelegate: ApplicationMenuDelegate {
     func applicationMenuNew(_ sender: Any?) {
         storiesController.new()
     }
+
+    func applicationMenuOpenProject(_ sender: Any?) {
+        storiesController.openProject()
+    }
+
+    func applicationMenuSaveProject(_ sender: Any?) {
+        storiesController.saveProject()
+    }
+
+    func applicationMenuSaveProjectAs(_ sender: Any?) {
+        storiesController.saveProjectAs()
+    }
 }
 
 // MARK: - DockMenuDelegate

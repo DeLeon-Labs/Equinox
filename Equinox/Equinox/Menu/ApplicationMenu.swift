@@ -33,6 +33,9 @@ import EquinoxAssets
 
 protocol ApplicationMenuDelegate: AnyObject {
     func applicationMenuNew(_ sender: Any?)
+    func applicationMenuOpenProject(_ sender: Any?)
+    func applicationMenuSaveProject(_ sender: Any?)
+    func applicationMenuSaveProjectAs(_ sender: Any?)
 }
 
 // MARK: - Class
@@ -129,6 +132,28 @@ final class ApplicationMenu: NSMenu {
                 keyEquivalent: "n",
                 keyModifier: .command,
                 action: #selector(ApplicationMenu.new(_:)),
+                target: self
+            ),
+            MenuItem(
+                title: "Open Project…",
+                keyEquivalent: "o",
+                keyModifier: .command,
+                action: #selector(ApplicationMenu.openProject(_:)),
+                target: self
+            ),
+            MenuItem.separator(),
+            MenuItem(
+                title: "Save Project…",
+                keyEquivalent: "s",
+                keyModifier: .command,
+                action: #selector(ApplicationMenu.saveProject(_:)),
+                target: self
+            ),
+            MenuItem(
+                title: "Save Project As…",
+                keyEquivalent: "S",
+                keyModifier: [.command, .shift],
+                action: #selector(ApplicationMenu.saveProjectAs(_:)),
                 target: self
             )
         ]
@@ -235,6 +260,21 @@ final class ApplicationMenu: NSMenu {
     @objc
     private func new(_ sender: Any?) {
         applicationDelegate?.applicationMenuNew(sender)
+    }
+
+    @objc
+    private func openProject(_ sender: Any?) {
+        applicationDelegate?.applicationMenuOpenProject(sender)
+    }
+
+    @objc
+    private func saveProject(_ sender: Any?) {
+        applicationDelegate?.applicationMenuSaveProject(sender)
+    }
+
+    @objc
+    private func saveProjectAs(_ sender: Any?) {
+        applicationDelegate?.applicationMenuSaveProjectAs(sender)
     }
     
     @objc

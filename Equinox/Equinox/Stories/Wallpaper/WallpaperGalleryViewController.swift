@@ -57,6 +57,7 @@ final class WallpaperGalleryViewController: ViewController {
     private let solarService: SolarService
     private let fileService: FileService
     private let imageProvider: ImageProvider
+    private let initialModels: [GalleryModel]
     private lazy var dragController: WallpaperGalleryDragController = {
         let controller = WallpaperGalleryDragController(type: type)
         controller.delegate = self
@@ -78,11 +79,18 @@ final class WallpaperGalleryViewController: ViewController {
     
     // MARK: - Initializer
 
-    init(type: WallpaperType, solarService: SolarService, fileService: FileService, imageProvider: ImageProvider) {
+    init(
+        type: WallpaperType,
+        solarService: SolarService,
+        fileService: FileService,
+        imageProvider: ImageProvider,
+        initialModels: [GalleryModel] = []
+    ) {
         self.type = type
         self.solarService = solarService
         self.fileService = fileService
         self.imageProvider = imageProvider
+        self.initialModels = initialModels
         super.init()
     }
     
@@ -102,6 +110,9 @@ final class WallpaperGalleryViewController: ViewController {
     private func setup() {
         setupView()
         setupActions()
+        if !initialModels.isEmpty {
+            replaceModels(initialModels)
+        }
     }
     
     private func setupView() {
@@ -206,6 +217,12 @@ final class WallpaperGalleryViewController: ViewController {
     
     func flashItems(_ indexPaths: Set<IndexPath>) {
         contentView.flashItems(at: indexPaths)
+    }
+
+    func replaceModels(_ models: [GalleryModel]) {
+        dataController.replace(with: models)
+        refreshData()
+        contentView.reloadCollection(dataController.data, type: .hard)
     }
     
     // MARK: - Private

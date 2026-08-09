@@ -132,6 +132,11 @@ final class WallpaperGalleryDataController {
     func insert(_ items: [GalleryModel], at index: Int) {
         mutableData.items.insert(contentsOf: items, at: index)
     }
+
+    func replace(with items: [GalleryModel]) {
+        mutableData.items = items
+        filesizeCache.removeAll()
+    }
     
     func remove(at index: Int) {
         mutableData.items.remove(at: index)

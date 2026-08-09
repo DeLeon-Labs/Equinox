@@ -36,6 +36,9 @@ import EquinoxUI
 protocol StoriesController {
     func start()
     func new()
+    func openProject()
+    func saveProject()
+    func saveProjectAs()
 }
 
 // MARK: - Enums, Structs
@@ -51,6 +54,7 @@ extension StoriesControllerImpl {
 final class StoriesControllerImpl: NSObject {
     private lazy var storageCore: StorageCore = StorageCoreImpl(userDefaults: .standard)
     private lazy var supportService: SupportService = SupportServiceImpl(storageCore: storageCore)
+    private lazy var projectService: WallpaperProjectService = WallpaperProjectServiceImpl()
 
     private var welcomeWindowController: WelcomeWindowController?
     private var supportWindowController: SupportWindowController?
@@ -68,6 +72,39 @@ extension StoriesControllerImpl: StoriesController {
     func new() {
         presentWelcome()
     }
+
+    func openProject() {
+        let openPanel = NSOpenPanel()
+        openPanel.allowsMultipleSelection = false
+        openPanel.canChooseDirectories = true
+        openPanel.canChooseFiles = false
+        openPanel.canCreateDirectories = false
+        openPanel.prompt = "Open"
+
+        guard openPanel.runModal() == .OK, let packageURL = openPanel.url else {
+            return
+        }
+
+        do {
+            let loadedProject = try projectService.load(from: packageURL)
+            let models = try WallpaperProjectAdapter.makeGalleryModels(from: loadedProject)
+            presentWallpaper(
+                selectedType: loadedProject.project.wallpaperKind.wallpaperType,
+                initialModels: models,
+                projectURL: packageURL
+            )
+        } catch {
+            NSAlert(error: error).runModal()
+        }
+    }
+
+    func saveProject() {
+        activeWallpaperWindowController?.saveProject(saveAs: false)
+    }
+
+    func saveProjectAs() {
+        activeWallpaperWindowController?.saveProject(saveAs: true)
+    }
     
     private func presentWelcome() {
         if let welcomeWindowController = welcomeWindowController {
@@ -80,7 +117,11 @@ extension StoriesControllerImpl: StoriesController {
         }
     }
     
-    private func presentWallpaper(selectedType: WallpaperType) {
+    private func presentWallpaper(
+        selectedType: WallpaperType,
+        initialModels: [GalleryModel] = [],
+        projectURL: URL? = nil
+    ) {
         let imageCore = ImageCoreImpl()
         let imageCacheCore = ImageCacheCoreImpl(totalCostLimit: Constants.imageCacheLimit)
         let fileCore = FileCoreImpl()
@@ -105,11 +146,21 @@ extension StoriesControllerImpl: StoriesController {
                     imageCore: imageCore,
                     imageCacheCore: imageCacheCore
                 )
-            )
+            ),
+            projectService: projectService,
+            initialModels: initialModels,
+            projectURL: projectURL
         )
         windowController.delegate = self
         windowController.window?.delegate = self
         wallpaperWindowControllers.append(windowController)
+    }
+
+    private var activeWallpaperWindowController: WallpaperWindowController? {
+        if let keyController = wallpaperWindowControllers.first(where: { $0.window?.isKeyWindow == true }) {
+            return keyController
+        }
+        return wallpaperWindowControllers.last
     }
 
     private func presentSolar() {

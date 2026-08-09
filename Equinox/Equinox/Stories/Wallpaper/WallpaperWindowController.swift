@@ -56,11 +56,14 @@ final class WallpaperWindowController: WindowController {
     private let solarService: SolarService
     private let settingsService: SettingsService
     private let imageProvider: ImageProvider
+    private let projectService: WallpaperProjectService
+    private let initialModels: [GalleryModel]
 
     private var contentWindow: Window?
     private var contentController: WindowViewController?
     private var wallpaperRootViewController: WallpaperRootViewController?
     private var toolbarController: WallpaperToolbarController?
+    private var projectURL: URL?
 
     init(
         type: WallpaperType,
@@ -68,7 +71,10 @@ final class WallpaperWindowController: WindowController {
         wallpaperService: WallpaperService,
         solarService: SolarService,
         settingsService: SettingsService,
-        imageProvider: ImageProvider
+        imageProvider: ImageProvider,
+        projectService: WallpaperProjectService,
+        initialModels: [GalleryModel] = [],
+        projectURL: URL? = nil
     ) {
         self.type = type
         self.fileService = fileService
@@ -76,6 +82,9 @@ final class WallpaperWindowController: WindowController {
         self.solarService = solarService
         self.settingsService = settingsService
         self.imageProvider = imageProvider
+        self.projectService = projectService
+        self.initialModels = initialModels
+        self.projectURL = projectURL
         super.init(window: nil)
         setupWindow()
     }
@@ -89,7 +98,8 @@ final class WallpaperWindowController: WindowController {
             wallpaperService: wallpaperService,
             solarService: solarService,
             settingsService: settingsService,
-            imageProvider: imageProvider
+            imageProvider: imageProvider,
+            initialModels: initialModels
         )
         controller.delegate = self
         wallpaperRootViewController = controller
@@ -139,6 +149,60 @@ final class WallpaperWindowController: WindowController {
     // MARK: - Public
     
     weak var delegate: WallpaperWindowControllerDelegate?
+
+    func saveProject(saveAs: Bool) {
+        if !saveAs, let projectURL = projectURL {
+            saveProject(to: projectURL)
+            return
+        }
+
+        guard let window = window else {
+            return
+        }
+
+        let savePanel = NSSavePanel()
+        savePanel.canCreateDirectories = true
+        savePanel.nameFieldStringValue = "My Wallpaper.equinoxproject"
+        savePanel.allowedFileTypes = ["equinoxproject"]
+        savePanel.canSelectHiddenExtension = true
+        savePanel.isExtensionHidden = false
+        savePanel.beginSheetModal(for: window) { [weak self] response in
+            guard response == .OK, let selectedURL = savePanel.url else {
+                return
+            }
+            let finalURL = selectedURL.pathExtension.isEmpty
+                ? selectedURL.appendingPathExtension("equinoxproject")
+                : selectedURL
+            self?.saveProject(to: finalURL)
+        }
+    }
+
+    private func saveProject(to url: URL) {
+        guard let models = wallpaperRootViewController?.galleryModels, !models.isEmpty else {
+            return
+        }
+
+        do {
+            let state = WallpaperProjectAdapter.makeSaveState(kind: type.projectKind, models: models)
+            let loadedProject = try projectService.save(
+                project: state.project,
+                sourceImageURLsByIdentifier: state.sourceImageURLsByIdentifier,
+                to: url
+            )
+            let reboundModels = try WallpaperProjectAdapter.makeGalleryModels(from: loadedProject)
+            wallpaperRootViewController?.replaceGalleryModels(reboundModels)
+            projectURL = url
+        } catch {
+            presentProjectError(error)
+        }
+    }
+
+    private func presentProjectError(_ error: Error) {
+        guard let window = window else {
+            return
+        }
+        NSAlert(error: error).beginSheetModal(for: window)
+    }
 }
 
 // MARK: - WallpaperRootViewControllerDelegate

@@ -55,6 +55,7 @@ final class WallpaperMainViewController: ViewController {
     private let fileService: FileService
     private let solarService: SolarService
     private let imageProvider: ImageProvider
+    private let initialModels: [GalleryModel]
     
     private weak var appearancePopover: NSPopover?
     private weak var appearancePopoverView: NSView?
@@ -72,12 +73,14 @@ final class WallpaperMainViewController: ViewController {
         type: WallpaperType,
         fileService: FileService,
         solarService: SolarService,
-        imageProvider: ImageProvider
+        imageProvider: ImageProvider,
+        initialModels: [GalleryModel] = []
     ) {
         self.type = type
         self.fileService = fileService
         self.solarService = solarService
         self.imageProvider = imageProvider
+        self.initialModels = initialModels
         super.init()
     }
 
@@ -127,6 +130,14 @@ final class WallpaperMainViewController: ViewController {
     // MARK: - Public
 
     weak var delegate: WallpaperMainViewControllerDelegate?
+
+    var galleryModels: [GalleryModel] {
+        return galleryController?.data.items ?? []
+    }
+
+    func replaceGalleryModels(_ models: [GalleryModel]) {
+        galleryController?.replaceModels(models)
+    }
 
     // MARK: - Private
 
@@ -198,7 +209,8 @@ final class WallpaperMainViewController: ViewController {
             type: type,
             solarService: solarService,
             fileService: fileService,
-            imageProvider: imageProvider
+            imageProvider: imageProvider,
+            initialModels: initialModels
         )
         galleryController = controller
         controller.delegate = self

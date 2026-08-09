@@ -37,8 +37,9 @@ public final class GalleryModel {
         case time(Date?)
     }
 
+    public let identifier: String
     public var number: Int
-    public let url: URL
+    public var url: URL
     public var appearance: AppearanceType
     public var primary: Bool
     public var azimuth: Double?
@@ -46,6 +47,7 @@ public final class GalleryModel {
     public var time: Date?
     
     public init(
+        identifier: String = UUID().uuidString,
         number: Int,
         url: URL,
         appearance: AppearanceType,
@@ -54,6 +56,7 @@ public final class GalleryModel {
         altitude: Double?,
         time: Date?
     ) {
+        self.identifier = identifier
         self.number = number
         self.url = url
         self.appearance = appearance
@@ -68,6 +71,6 @@ public final class GalleryModel {
 
 extension GalleryModel: Equatable {
     public static func == (lhs: GalleryModel, rhs: GalleryModel) -> Bool {
-        return lhs.number == rhs.number
+        return lhs.identifier == rhs.identifier
     }
 }

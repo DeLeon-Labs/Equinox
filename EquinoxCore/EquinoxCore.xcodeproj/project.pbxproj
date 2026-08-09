@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A10000000000000000000002 /* WallpaperProject.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000001 /* WallpaperProject.swift */; };
+		A10000000000000000000004 /* WallpaperProjectError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000003 /* WallpaperProjectError.swift */; };
+		A10000000000000000000006 /* WallpaperProjectService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000005 /* WallpaperProjectService.swift */; };
+		A10000000000000000000008 /* WallpaperProjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000007 /* WallpaperProjectTests.swift */; };
+		A1000000000000000000000A /* WallpaperProjectServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000009 /* WallpaperProjectServiceTests.swift */; };
 		F32C64AB27028479002F5817 /* EquinoxCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3B334CD267DC5B90025AB04 /* EquinoxCore.framework */; };
 		F32C64B427028505002F5817 /* ImageCacheCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32C64B327028505002F5817 /* ImageCacheCoreTests.swift */; };
 		F3348F54270296AF00695C8A /* SolarCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3348F53270296AF00695C8A /* SolarCoreTests.swift */; };
@@ -62,6 +67,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A10000000000000000000001 /* WallpaperProject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperProject.swift; sourceTree = "<group>"; };
+		A10000000000000000000003 /* WallpaperProjectError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperProjectError.swift; sourceTree = "<group>"; };
+		A10000000000000000000005 /* WallpaperProjectService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperProjectService.swift; sourceTree = "<group>"; };
+		A10000000000000000000007 /* WallpaperProjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperProjectTests.swift; sourceTree = "<group>"; };
+		A10000000000000000000009 /* WallpaperProjectServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperProjectServiceTests.swift; sourceTree = "<group>"; };
 		F32C64A727028479002F5817 /* EquinoxCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EquinoxCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F32C64B327028505002F5817 /* ImageCacheCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheCoreTests.swift; sourceTree = "<group>"; };
 		F3348F53270296AF00695C8A /* SolarCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarCoreTests.swift; sourceTree = "<group>"; };
@@ -130,6 +140,8 @@
 		F32C64A827028479002F5817 /* EquinoxCoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				A10000000000000000000007 /* WallpaperProjectTests.swift */,
+				A10000000000000000000009 /* WallpaperProjectServiceTests.swift */,
 				F374BA4F292E7D2300CE69FF /* Mocks */,
 				F3348F5F2702B09600695C8A /* Resources */,
 				F32C64B327028505002F5817 /* ImageCacheCoreTests.swift */,
@@ -215,6 +227,7 @@
 		F3D2EDEF267DCD9C009704C5 /* Errors */ = {
 			isa = PBXGroup;
 			children = (
+				A10000000000000000000003 /* WallpaperProjectError.swift */,
 				F376FEAC2F5C8A47001DBB99 /* StoreError.swift */,
 				F3D2EDF0267DCD9C009704C5 /* FileError.swift */,
 				F3D2EDF1267DCD9C009704C5 /* ImageError.swift */,
@@ -227,6 +240,7 @@
 		F3D2EDF4267DCD9C009704C5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				A10000000000000000000001 /* WallpaperProject.swift */,
 				F376FEAE2F5C8BC9001DBB99 /* Product.swift */,
 				F3D2EDF5267DCD9C009704C5 /* ImageFormatType.swift */,
 				F3D2EDF6267DCD9C009704C5 /* ImageMetadata.swift */,
@@ -246,6 +260,7 @@
 		F3D2EDFE267DCD9C009704C5 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				A10000000000000000000005 /* WallpaperProjectService.swift */,
 				F376FEAA2F5BA8D0001DBB99 /* SupportService.swift */,
 				F3D2EE00267DCD9C009704C5 /* FileService.swift */,
 				F3BD019326C352EF0090D864 /* SolarService.swift */,
@@ -381,6 +396,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10000000000000000000008 /* WallpaperProjectTests.swift in Sources */,
+				A1000000000000000000000A /* WallpaperProjectServiceTests.swift in Sources */,
 				F38D5B142741B0950065E13D /* StorageCoreTests.swift in Sources */,
 				F32C64B427028505002F5817 /* ImageCacheCoreTests.swift in Sources */,
 				F3348F652702B5A000695C8A /* ImageCoreTests.swift in Sources */,
@@ -395,6 +412,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10000000000000000000002 /* WallpaperProject.swift in Sources */,
+				A10000000000000000000004 /* WallpaperProjectError.swift in Sources */,
+				A10000000000000000000006 /* WallpaperProjectService.swift in Sources */,
 				F3D2EE0E267DCD9C009704C5 /* AppearanceMetadata.swift in Sources */,
 				F3EC93B526CC147D0032FA39 /* WallpaperService.swift in Sources */,
 				F356C8BF2736EFDC00E915C6 /* StorageError.swift in Sources */,
