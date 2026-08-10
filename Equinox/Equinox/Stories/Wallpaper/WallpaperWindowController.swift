@@ -63,7 +63,11 @@ final class WallpaperWindowController: WindowController {
     private var contentController: WindowViewController?
     private var wallpaperRootViewController: WallpaperRootViewController?
     private var toolbarController: WallpaperToolbarController?
-    private var projectURL: URL?
+    private var projectURL: URL? {
+        didSet {
+            updateWindowIdentity()
+        }
+    }
 
     init(
         type: WallpaperType,
@@ -122,12 +126,25 @@ final class WallpaperWindowController: WindowController {
 
         window = contentWindow
         window?.setContentSize(Constants.regularSize)
-        setWindowTitle()
+        updateWindowIdentity()
         window?.makeKeyAndOrderFront(self)
         window?.center()
     }
-    
-    private func setWindowTitle() {
+
+    private func updateWindowIdentity() {
+        window?.titleVisibility = .visible
+
+        guard let projectURL = projectURL else {
+            setUnsavedWindowTitle()
+            return
+        }
+
+        window?.representedURL = projectURL
+        window?.setTitleWithRepresentedFilename(projectURL.path)
+        window?.miniwindowTitle = window?.title ?? projectURL.lastPathComponent
+    }
+
+    private func setUnsavedWindowTitle() {
         let appName = NSApplication.appName
         var title: String
         
@@ -141,7 +158,8 @@ final class WallpaperWindowController: WindowController {
         case .appearance:
             title = "\(appName) - \(Localization.Wallpaper.Main.appearance)"
         }
-        
+
+        window?.representedURL = nil
         window?.title = title
         window?.miniwindowTitle = title
     }

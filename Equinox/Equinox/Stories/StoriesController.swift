@@ -37,6 +37,7 @@ protocol StoriesController {
     func start()
     func new()
     func openProject()
+    func openProject(at url: URL) -> Bool
     func saveProject()
     func saveProjectAs()
 }
@@ -76,15 +77,21 @@ extension StoriesControllerImpl: StoriesController {
     func openProject() {
         let openPanel = NSOpenPanel()
         openPanel.allowsMultipleSelection = false
-        openPanel.canChooseDirectories = true
-        openPanel.canChooseFiles = false
+        openPanel.allowedFileTypes = ["equinoxproject"]
+        openPanel.canChooseDirectories = false
+        openPanel.canChooseFiles = true
         openPanel.canCreateDirectories = false
         openPanel.prompt = "Open"
+        openPanel.treatsFilePackagesAsDirectories = false
 
         guard openPanel.runModal() == .OK, let packageURL = openPanel.url else {
             return
         }
 
+        _ = openProject(at: packageURL)
+    }
+
+    func openProject(at packageURL: URL) -> Bool {
         do {
             let loadedProject = try projectService.load(from: packageURL)
             let models = try WallpaperProjectAdapter.makeGalleryModels(from: loadedProject)
@@ -93,8 +100,12 @@ extension StoriesControllerImpl: StoriesController {
                 initialModels: models,
                 projectURL: packageURL
             )
+            welcomeWindowController?.close()
+            welcomeWindowController = nil
+            return true
         } catch {
             NSAlert(error: error).runModal()
+            return false
         }
     }
 

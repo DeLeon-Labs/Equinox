@@ -30,6 +30,7 @@ import AppKit
 
 final class AppDelegate: NSObject {
     let storiesController: StoriesController = StoriesControllerImpl()
+    private var openedProjectFromExternalEvent = false
 }
 
 // MARK: - NSApplicationDelegate
@@ -37,7 +38,17 @@ final class AppDelegate: NSObject {
 extension AppDelegate: NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         setupMenu()
-        storiesController.start()
+        if !openedProjectFromExternalEvent {
+            storiesController.start()
+        }
+    }
+
+    func application(_ application: NSApplication, open urls: [URL]) {
+        for url in urls where url.isFileURL {
+            if storiesController.openProject(at: url) {
+                openedProjectFromExternalEvent = true
+            }
+        }
     }
     
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
