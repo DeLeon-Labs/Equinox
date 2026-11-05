@@ -268,6 +268,13 @@ public final class GalleryCollectionView: NSScrollView {
         }
     }
 
+    func frameForItem(at indexPath: IndexPath) -> NSRect? {
+        guard let itemView = collectionView.item(at: indexPath)?.view else {
+            return nil
+        }
+        return convert(itemView.bounds, from: itemView)
+    }
+
     // MARK: - Private
 
     private func updateFooterPin() {

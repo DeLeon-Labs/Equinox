@@ -131,6 +131,8 @@ final class WallpaperGalleryViewController: ViewController {
         contentView.dragSupplementaryTitle = Localization.Wallpaper.Gallery.dragSupplementary
         contentView.dragAlternativeTitle = Localization.Wallpaper.Gallery.or
         contentView.dragBrowseTitle = Localization.Wallpaper.Gallery.browse
+        contentView.additionalBrowseTitle = Localization.Wallpaper.Gallery.browse
+        contentView.isAdditionalBrowseHidden = true
         contentView.delegate = dragController
 
         contentView.galleryTextList = .init(
@@ -148,6 +150,9 @@ final class WallpaperGalleryViewController: ViewController {
     
     private func setupActions() {
         contentView.dragBrowseAction = { [weak self] _ in
+            self?.delegate?.openBrowseDialog()
+        }
+        contentView.additionalBrowseAction = { [weak self] _ in
             self?.delegate?.openBrowseDialog()
         }
     }
@@ -235,12 +240,23 @@ final class WallpaperGalleryViewController: ViewController {
     }
     
     private func refreshState() {
-        let isEmpty = dataController.data.items.isEmpty
+        let itemsCount = dataController.data.items.count
+        let isEmpty = itemsCount == 0
+        let canBrowseForAdditionalAppearanceImage: Bool
+
+        switch type {
+        case .solar, .time:
+            canBrowseForAdditionalAppearanceImage = false
+
+        case .appearance:
+            canBrowseForAdditionalAppearanceImage = itemsCount == 1
+        }
         
         contentView.setCollectionVisibility(!isEmpty, animated: true)
         contentView.isDragHidden = !isEmpty
         contentView.isDragHighlighted = false
         contentView.isSelectionEnabled = !isEmpty
+        contentView.isAdditionalBrowseHidden = !canBrowseForAdditionalAppearanceImage
     }
     
     @objc

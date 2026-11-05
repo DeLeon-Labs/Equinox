@@ -48,6 +48,12 @@ extension GalleryContentView {
         case appearance
         case primary
     }
+
+    private enum Constants {
+        static let additionalBrowseButtonTopOffset: CGFloat = 20
+        static let additionalBrowseButtonWidth: CGFloat = 100
+        static let additionalBrowseButtonHeight: CGFloat = 32
+    }
 }
 
 // MARK: - Class
@@ -55,6 +61,7 @@ extension GalleryContentView {
 public final class GalleryContentView: View {
     private lazy var dragView = DragView()
     private lazy var galleryCollectionView = GalleryCollectionView()
+    private lazy var additionalBrowseButton = PushButton()
     private weak var dragViewTopConstraint: NSLayoutConstraint?
 
     // MARK: - Initializer
@@ -76,6 +83,29 @@ public final class GalleryContentView: View {
         }
     }
 
+    public override func layout() {
+        super.layout()
+
+        guard !additionalBrowseButton.isHidden,
+              let collectionItemFrame = galleryCollectionView.frameForItem(at: IndexPath(item: 0, section: 0)) else {
+            return
+        }
+
+        let itemFrame = convert(collectionItemFrame, from: galleryCollectionView)
+        let buttonOriginY = isFlipped
+            ? itemFrame.maxY + Constants.additionalBrowseButtonTopOffset
+            : itemFrame.minY - Constants.additionalBrowseButtonTopOffset - Constants.additionalBrowseButtonHeight
+        let buttonFrame = NSRect(
+            x: itemFrame.midX - Constants.additionalBrowseButtonWidth / 2,
+            y: buttonOriginY,
+            width: Constants.additionalBrowseButtonWidth,
+            height: Constants.additionalBrowseButtonHeight
+        )
+        if additionalBrowseButton.frame != buttonFrame {
+            additionalBrowseButton.frame = buttonFrame
+        }
+    }
+
     // MARK: - Setup
 
     private func setup() {
@@ -86,6 +116,7 @@ public final class GalleryContentView: View {
     private func setupView() {
         addSubview(galleryCollectionView)
         addSubview(dragView)
+        addSubview(additionalBrowseButton)
     }
 
     private func setupConstraints() {
@@ -110,6 +141,7 @@ public final class GalleryContentView: View {
         didSet {
             galleryCollectionView.style = style?.galleryCollectionStyle
             dragView.style = style?.dragStyle
+            additionalBrowseButton.style = style?.dragStyle.browseStyle
         }
     }
 
@@ -176,6 +208,31 @@ public final class GalleryContentView: View {
     public var dragBrowseAction: Button.Action? {
         didSet {
             dragView.browseAction = dragBrowseAction
+        }
+    }
+
+    public var additionalBrowseTitle: String {
+        get {
+            return additionalBrowseButton.title
+        }
+        set {
+            additionalBrowseButton.title = newValue
+        }
+    }
+
+    public var additionalBrowseAction: Button.Action? {
+        didSet {
+            additionalBrowseButton.onAction = additionalBrowseAction
+        }
+    }
+
+    public var isAdditionalBrowseHidden: Bool {
+        get {
+            return additionalBrowseButton.isHidden
+        }
+        set {
+            additionalBrowseButton.isHidden = newValue
+            needsLayout = true
         }
     }
 
